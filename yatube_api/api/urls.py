@@ -1,23 +1,24 @@
-# api/urls.py (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+# api/urls.py
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from rest_framework_nested import routers
 
 from .views import CommentViewSet, FollowViewSet, GroupViewSet, PostViewSet
 
-router_v1 = DefaultRouter()
-router_v1.register('posts', PostViewSet, basename='posts')
-router_v1.register('groups', GroupViewSet, basename='groups')
-router_v1.register('follow', FollowViewSet, basename='follow')
+router = DefaultRouter()
+# Регистрируем посты
+router.register('posts', PostViewSet, basename='posts')
+# Регистрируем группы
+router.register('groups', GroupViewSet, basename='groups')
+# Регистрируем подписки
+router.register('follow', FollowViewSet, basename='followers')
 
-posts_router = routers.NestedSimpleRouter(
-    router_v1, r'posts', lookup='post'
-)
-posts_router.register(
-    r'comments', CommentViewSet, basename='post-comments'
+# регистрируем комменты С УЧЕТОМ post_id
+router.register(
+    r'posts/(?P<post_id>\d+)/comments',
+    CommentViewSet,
+    basename='comments'
 )
 
 urlpatterns = [
-    path('', include(router_v1.urls)),
-    path('', include(posts_router.urls)),
+    path('', include(router.urls)),
 ]

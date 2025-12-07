@@ -18,3 +18,4 @@ drf_spectacular
 djoser
 djangorestframework-simplejwt
 drf-nested-routers==0.93.4
+pyJWT==2.1.0
